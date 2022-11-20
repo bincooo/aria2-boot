@@ -11,6 +11,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.util.UUID;
 
 @Log
 @Repository
+@CacheConfig(cacheNames = "baidu-share")
 public class BaiduCaller {
 
     private final BaiduProperties properties;
@@ -30,44 +33,11 @@ public class BaiduCaller {
         this.properties = properties;
     }
 
+    @Cacheable(key = "#uri")
     public String shareLink(String uri) {
-        int index = uri.lastIndexOf("/");
-        String dir = uri.substring(0, index);
-        String file = uri.substring(index + 1);
-
-        String fsId = null;
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
-            if (dir.equals("")) dir = "/";
-            String url = "https://pan.baidu.com/rest/2.0/xpan/file?method=list&dir=" + dir + "&web=0&access_token="
-                    + properties.getAccessToken();
-            log.info("开始获取网盘目录: " + dir);
-            HttpGet get = new HttpGet(url);
-            get.setHeader("Cookie", properties.getCookie());
-            CloseableHttpResponse response = client.execute(get);
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-
-                String body = EntityUtils.toString(entity, "utf-8");
-                log.info(body);
-                @SuppressWarnings("unchecked")
-                List<Map<String, Serializable>> list = (List<Map<String, Serializable>>) mapper
-                        .readValue(body, Map.class)
-                        .get("list");
-                if (list != null) {
-                    fsId = list.stream()
-                            .filter(it -> file.equals(it.get("server_filename")))
-                            .map(it -> it.get("fs_id").toString())
-                            .findAny()
-                            .orElse(null);
-                }
-            }
-        } catch (IOException e) {
-            log.info("获取网盘目录失败: " + dir);
-            e.printStackTrace();
-        }
-
+        String fsId = fileId(uri);
         if (fsId == null) {
-            log.info("无法获取网盘文件【" + file + "】的 fs_id");
+            log.info("无法获取网盘文件【" + uri + "】的 fs_id");
             return null;
         }
 
@@ -95,6 +65,45 @@ public class BaiduCaller {
 
         } catch (IOException e) {
             log.info("无法创建网盘分享链接: " + uri);
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String fileId(String uri) {
+        int index = uri.lastIndexOf("/");
+        String dir = uri.substring(0, index);
+        String file = uri.substring(index + 1);
+
+        if ("".equals(dir)) dir = "/";
+        String url = "https://pan.baidu.com/api/list?clienttype=0&app_id="
+                + properties.getAppId() + "&web=1&dp-logid="
+                + properties.getDpLogId() + "&order=time&desc=1&dir="
+                + dir + "&num=100&page=1";
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            log.info("开始获取网盘目录: " + dir);
+            HttpGet get = new HttpGet(url);
+            get.setHeader("Cookie", properties.getCookie());
+            CloseableHttpResponse response = client.execute(get);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                String body = EntityUtils.toString(entity, "utf-8");
+                log.info(body);
+                @SuppressWarnings("unchecked")
+                List<Map<String, Serializable>> list = (List<Map<String, Serializable>>) mapper
+                        .readValue(body, Map.class)
+                        .get("list");
+                if (list != null) {
+                    return list.stream()
+                            .filter(it ->  (int) it.get("isdir") != 1 && file.equals(it.get("server_filename")))
+                            .map(it -> it.get("fs_id").toString())
+                            .findAny()
+                            .orElse(null);
+                }
+            }
+
+        } catch (IOException e) {
+            log.info("获取网盘目录失败: " + dir);
             e.printStackTrace();
         }
         return null;

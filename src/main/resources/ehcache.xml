@@ -27,12 +27,25 @@
             overflowToDisk="true"/>
 
     <!--自定缓存策略，为自定义的缓存策略-->
-    <cache name="baidu"
+    <cache name="baidu-link"
            maxElementsInMemory="1"
            eternal="true"
            overflowToDisk="true"
            maxElementsOnDisk="0"
-           timeToIdleSeconds="7200"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="0"
+           diskPersistent="true">
+        <!-- 比非持久化的配置多了这个 -->
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+        <bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+    </cache>
+
+    <cache name="baidu-share"
+           maxElementsInMemory="1"
+           eternal="true"
+           overflowToDisk="true"
+           maxElementsOnDisk="0"
+           timeToIdleSeconds="86300"
            timeToLiveSeconds="0"
            diskPersistent="true">
         <!-- 比非持久化的配置多了这个 -->

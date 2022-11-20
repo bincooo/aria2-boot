@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Log
 @Service
-@CacheConfig(cacheNames = {"baidu"})
+@CacheConfig(cacheNames = "baidu-link")
 public class Aria2Service {
 
     private final BaiduCaller baiduCaller;

@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 public class BaiduProperties {
     private String removePrefix;
     private String shareLinkPwd = "9527";
-    private String accessToken;
-
     private String dpLogId;
     private String cookie;
     private String appId;

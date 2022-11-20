@@ -34,13 +34,13 @@ springBoot {
     mainClass = 'icu.baidu.aria2.BootApplication'
 }
 
-sourceSets {
-    main {
-        java {
-            exclude 'test/**'
-        }
-        resources {
-            exclude 'application.yaml'
-        }
-    }
-}
+//sourceSets {
+//    main {
+//        java {
+//            exclude 'test/**'
+//        }
+//        resources {
+//            exclude 'application.yaml'
+//        }
+//    }
+//}

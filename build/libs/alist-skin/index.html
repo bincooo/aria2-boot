@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>认证成功</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body>
+    <h2 hidden style="text-align: center">授权完成 !</h2>
+    <script>
+        $(function() {
+            const hash = location.hash
+            const split = location.hash.substr(1).split("&")
+            for(let idx in split) {
+                const sp = split[idx].split("=")
+                if (sp[0] == "access_token") {
+                    $.ajax({
+                        url: location.origin + "/baidu/auth/" + sp[1],
+                        type: "GET",
+                        success() {
+                            console.log("回调结束 ~")
+                            $("h2").removeAttr("hidden")
+                            setTimeout(() => {
+                                window.close()
+                            }, 2000)
+                        }
+                    })
+                }
+            }
+        })
+    </script>
+</body>
+</html>
