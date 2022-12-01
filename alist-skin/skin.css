@@ -1,9 +1,9 @@
 body {
-    cursor: url(/static/alist-skin/cursor.ico),auto;
+    cursor: url(https://cdn.jsdelivr.net/gh/medlar01/cdn@0.0.22/alist-skin/cursor.ico), auto;
 }
 
 body::after {
-    background-image: url(/static/alist-skin/background.jpg);
+    background-image: url(https://img1.imgtp.com/2022/11/24/vH8cFk2C.jpg);
     content: "";
     background-repeat: no-repeat;
     background-position: center;

@@ -27,6 +27,21 @@ baidu:
 ![图片1](images/截屏2022-11-20%2017.31.43.png)
 ![图片1](images/截屏2022-11-20%2017.38.46.png)
 
+域名dns解析自动上传。
+用于解决家庭公网IP不固定，每天凌晨2点会检测公网ip信息，一旦变化便同步到腾讯云dnspod。
+腾讯云dnspod使用方法请自行百度
+```yaml
+dnspod:
+  # 你的顶级域名
+  domain: icu-xxx.xx
+  # 域名解析的行id
+  record-id: 12546xxxx
+  # 腾讯云pod提供的开放secretId和secretKey
+  secret-id: AKIDHf3AEHJJG9xdaLvMcJm0yf9Oxxxxxx
+  secret-key: RdaKDqJYXHo7B3h6HDvqdLzxumXxxxxx
+```
+![图片1](images/截屏2022-12-01%2020.13.33.png)
+
 3. 运行 aria2-boot.jar
 进入 aria2-boot.jar 所在目录
 打开cmd控制台执行:

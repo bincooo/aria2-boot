@@ -28,19 +28,21 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'com.tencentcloudapi:tencentcloud-sdk-java:3.1.322'
 }
 
 springBoot {
     mainClass = 'icu.baidu.aria2.BootApplication'
 }
 
-//sourceSets {
-//    main {
-//        java {
-//            exclude 'test/**'
-//        }
-//        resources {
-//            exclude 'application.yaml'
-//        }
-//    }
-//}
+sourceSets {
+    main {
+        java {
+            exclude 'test/**'
+        }
+        resources {
+            exclude 'application.yaml'
+        }
+    }
+}

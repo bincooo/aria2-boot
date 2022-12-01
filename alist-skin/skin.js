@@ -17,8 +17,8 @@ let _c = {
             method: 0
         },
         {
-            name: "百度授权",
-            link: "https://openapi.baidu.com/oauth/2.0/authorize?response_type=token&client_id=tlCNxGqFdG3sf9uP6Ooi5CwNsU1rXPXt&redirect_uri=http://www.icu-web.tk:8082/baidu/oauth2.0/&scope=basic,netdisk",
+            name: "加速工具",
+            link: "https://github.com/medlar01/aria2-boot",
             method: 1
         }
     ],
@@ -40,7 +40,7 @@ let _c = {
 
 
 const undef = undefined
-const baseUrl = "/static/alist-skin"
+const baseUrl = "https://cdn.jsdelivr.net/gh/medlar01/cdn@0.0.22/alist-skin"
 // 加载jq
 function load(id, el, props = {}, callback = () => {}) {
     if (id && !!document.querySelector("#" + id)) {
@@ -109,7 +109,7 @@ function ready() {
             for(let idx in _c.menus) {
                 const data = _c.menus[idx]
                 html += `<span class=menu data-idx=${idx}>${data.name}</span>`
-                if (idx !== _c.menus.length - 1) {
+                if (idx != _c.menus.length - 1) {
                     html += "<span>|<span>"
                 }
             }
@@ -140,19 +140,12 @@ function ready() {
     }, 500)
 
 
-    // 监听地址栏变化
     setInterval(() => {
-        if (location.href === _c.cached.old_url) {
-            return
-        }
         if (_c.aria2.proxy) {
-
-            $.emitQuery(".obj-box a.hope-button", (el) => {
-                // el.click(() => { _c.cached.aria2 = true })
-                    const href = el.attr("href")
-                    el.attr("href", href.replace(location.origin + "/p/", _c.aria2.proxy + "/baidu/"))
-                    _c.cached.old_url = location.href;
-            })
+            const $obj = $(".obj-box a.hope-anchor:first-child:not([data-id])")
+            if ($obj.length === 0) return
+            $obj.attr("href", $obj.attr("href").replace(location.origin + "/d/", _c.aria2.proxy + "/baidu/"))
+            $obj.attr("data-id", 1)
         }
 
     }, 500)
