@@ -2,16 +2,13 @@ package icu.baidu.aria2.controller;
 
 import icu.baidu.aria2.config.BaiduProperties;
 import icu.baidu.aria2.service.Aria2Service;
-import icu.baidu.aria2.service.DnsService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.HandlerMapping;
-import javax.servlet.http.HttpServletRequest;
 
 @Log
 @Controller
@@ -49,13 +46,13 @@ public class Aria2Controller {
         return uri;
     }
 
-    @Autowired
-    private DnsService dnsService;
-
-    @GetMapping("/test")
-    @ResponseBody
-    public String test() {
-        dnsService.pullIp();
-        return "OK";
-    }
+//    @Autowired
+//    private DnsService dnsService;
+//
+//    @GetMapping("/test")
+//    @ResponseBody
+//    public String test() {
+//        dnsService.pullIp();
+//        return "OK";
+//    }
 }

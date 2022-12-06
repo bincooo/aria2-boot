@@ -40,7 +40,7 @@ let _c = {
 
 
 const undef = undefined
-const baseUrl = "https://cdn.jsdelivr.net/gh/medlar01/cdn@0.0.22/alist-skin"
+const baseUrl = "https://cdn.jsdelivr.net/gh/bincooo/cdn@0.0.23/alist-skin"
 // 加载jq
 function load(id, el, props = {}, callback = () => {}) {
     if (id && !!document.querySelector("#" + id)) {
@@ -85,14 +85,14 @@ function ready() {
         _c = Object.assign(_c, window.config)
     }
 
-    $.emitQuery = function(selector, cb, max = 5) {
+    $.emitQuery = function(selector, cb, max = 20) {
         const $el = $(selector)
         if ($el.length > 0) cb($el)
         else {
             if (max < 1) return
             setTimeout(() => {
                 $.emitQuery(selector, cb, max - 1)
-            }, 300)
+            }, 500)
         }
     }
 

@@ -49,7 +49,6 @@ public class DnsService {
         try {
             Credential cred = new Credential(secretId, secretKey);
             DnspodClient client = new DnspodClient(cred, "ap-shanghai");
-
             DescribeRecordRequest rec = new DescribeRecordRequest();
             rec.setDomain(domain);
             rec.setRecordId(rid);

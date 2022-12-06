@@ -2,16 +2,25 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.5'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.0.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.graalvm.buildtools.native' version '0.9.18'
 }
 
 group 'icu.baidu'
 version '1.0-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 
 repositories {
-    mavenCentral()
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+    mavenCentral()
 }
 
 dependencyManagement {
@@ -24,25 +33,47 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-logging'
     implementation 'org.springframework:spring-context-support'
-    implementation 'net.sf.ehcache:ehcache'
     implementation 'org.apache.httpcomponents:httpclient'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
-    implementation 'com.tencentcloudapi:tencentcloud-sdk-java:3.1.322'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation('com.tencentcloudapi:tencentcloud-sdk-java:3.1.622') {
+//        exclude group: 'commons-logging', module: 'commons-logging'
+    }
 }
 
 springBoot {
     mainClass = 'icu.baidu.aria2.BootApplication'
 }
 
-sourceSets {
-    main {
-        java {
-            exclude 'test/**'
-        }
-        resources {
-            exclude 'application.yaml'
+tasks.named('bootJar') {task ->
+    task.doFirst {
+        var config = file 'build/resources/main/application.yaml'
+        config.exists() && config.delete()
+    }
+}
+
+task zip(type: Zip) {
+    group 'build'
+    dependsOn 'build'
+    from 'aria2.service'
+    from 'src/main/resources/application.yaml'
+    from "build/libs/${project.name}-${project.version}.jar"
+    archiveName 'aria2-boot.zip'
+    destinationDir file('build/libs')
+}
+
+graalvmNative {
+    binaries {
+        main {
+            buildArgs.add('--verbose')
+            buildArgs.add("--initialize-at-build-time=org.apache.commons.logging.LogFactory")
+            buildArgs.add("-H:ReflectionConfigurationFiles=$projectDir/reflection-config.json")
         }
     }
+}
+
+
+test {
+    println "123:" + projectDir
 }
